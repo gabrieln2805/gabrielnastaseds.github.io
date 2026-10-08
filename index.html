@@ -1,0 +1,706 @@
+<title>Gabriel Năstase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one wide column. Hero pairs a headline with a pipeline diagram.
+     Projects: filter chips, two featured panels side by side, then a tile grid. */
+  :root {
+    --bg: #eef1f0;
+    --panel: #e3e9e7;
+    --ink: #101a1c;
+    --muted: #4d5d5c;
+    --line: #c8d2cf;
+    --accent: #0a6b5b;
+    --accent-ink: #ffffff;
+    --go: #1e7a3c;
+    --check: #a86a00;
+    --nogo: #b3362b;
+    --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0c1315; --panel: #141e21; --ink: #e8efec; --muted: #9aaca8; --line: #26353a;
+      --accent: #52d1b2; --accent-ink: #06201a; --go: #5bd17f; --check: #e8b04a; --nogo: #f07a6e;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c1315; --panel: #141e21; --ink: #e8efec; --muted: #9aaca8; --line: #26353a;
+    --accent: #52d1b2; --accent-ink: #06201a; --go: #5bd17f; --check: #e8b04a; --nogo: #f07a6e;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 400 1rem/1.6 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; line-height: 1.1; }
+  p { margin: 0; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  .wrap { width: min(1120px, 100%); margin-inline: auto; padding-inline: clamp(16px, 4vw, 32px); }
+  .label {
+    font: 500 0.75rem/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* header */
+  .top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .top .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 20px; padding-block: 12px; }
+  .brand { font: 700 1.05rem/1 var(--display); text-decoration: none; letter-spacing: -0.01em; }
+  .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; }
+  .nav a { text-decoration: none; font-size: 0.9rem; color: var(--muted); padding: 4px 0; }
+  .nav a:hover { color: var(--ink); }
+  .tools { display: flex; align-items: center; gap: 8px; }
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .lang button {
+    appearance: none; background: none; border: 0; color: var(--muted); cursor: pointer;
+    font: 500 0.78rem/1 var(--mono); padding: 0 11px; height: 32px; letter-spacing: 0.04em;
+  }
+  .lang button:hover { color: var(--ink); }
+  .lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .theme {
+    appearance: none; background: none; border: 1px solid var(--line); color: var(--ink);
+    width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  }
+  .theme:hover { border-color: var(--accent); }
+
+  /* hero */
+  .hero { padding-block: clamp(40px, 8vw, 88px) clamp(32px, 6vw, 64px); display: grid; gap: clamp(32px, 5vw, 56px); }
+  .hero h1 { font-size: clamp(2.3rem, 5.6vw, 4.4rem); font-weight: 700; max-width: 20ch; }
+  .hero .intro { display: grid; gap: 20px; max-width: 62ch; }
+  .hero .intro p { font-size: 1.1rem; color: var(--muted); }
+  .hero .intro p strong { color: var(--ink); font-weight: 600; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 4px;
+    font: 500 0.92rem/1 var(--body); text-decoration: none; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn.primary:hover { filter: brightness(1.08); }
+
+  /* pipeline */
+  .pipe { background: var(--panel); border-radius: 6px; padding: clamp(18px, 3vw, 28px); display: grid; gap: 18px; min-width: 0; }
+  .pipe-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
+  .flow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; }
+  .flow li { position: relative; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); margin-right: 22px; min-width: 0; }
+  .flow li:last-child { margin-right: 0; }
+  .flow li:not(:last-child)::after {
+    content: "\2192"; position: absolute; right: -22px; top: 50%; width: 22px; transform: translateY(-50%);
+    text-align: center; color: var(--accent); font: 500 1rem/1 var(--mono);
+  }
+  .flow .step { display: block; font: 400 0.7rem/1.3 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+  .flow b { display: block; font: 600 0.98rem/1.25 var(--display); margin-top: 4px; overflow-wrap: anywhere; }
+  .orchestra {
+    border: 1px dashed var(--accent); padding: 8px 14px; font: 400 0.8rem/1.4 var(--mono); color: var(--ink);
+    display: flex; flex-wrap: wrap; gap: 4px 18px; justify-content: space-between;
+  }
+  .orchestra span:first-child { color: var(--accent); font-weight: 500; }
+  .pipe-foot { color: var(--muted); font-size: 0.92rem; max-width: 80ch; }
+  .pipe-foot strong { color: var(--ink); font-weight: 600; }
+  @media (max-width: 900px) {
+    .flow { grid-template-columns: 1fr; }
+    .flow li { margin-right: 0; margin-bottom: 22px; }
+    .flow li:last-child { margin-bottom: 0; }
+    .flow li:not(:last-child)::after { content: "\2193"; right: auto; left: 50%; top: auto; bottom: -22px; width: 22px; margin-left: -11px; transform: none; }
+  }
+
+  /* sections */
+  section { padding-block: clamp(36px, 6vw, 72px); border-top: 1px solid var(--line); }
+  .sec-head { display: grid; gap: 10px; margin-bottom: clamp(20px, 3vw, 32px); }
+  .sec-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 700; }
+  .sec-head p { color: var(--muted); max-width: 64ch; }
+
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .chip {
+    appearance: none; font: 500 0.82rem/1 var(--mono); padding: 9px 14px; border-radius: 999px; cursor: pointer;
+    background: transparent; border: 1px solid var(--line); color: var(--ink);
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  /* featured pair */
+  .features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
+  .feature {
+    display: flex; flex-direction: column; gap: 14px; min-width: 0;
+    border: 1px solid var(--ink); border-radius: 6px; padding: clamp(18px, 3vw, 30px);
+  }
+  .feature h3 { font: 500 clamp(1.3rem, 2.4vw, 1.7rem)/1.15 var(--mono); letter-spacing: -0.01em; overflow-wrap: anywhere; }
+  .feature p { color: var(--muted); }
+  .feature p strong { color: var(--ink); font-weight: 600; }
+  .feature .tags { margin-top: 0; }
+  .feature .links { margin-top: auto; }
+  .rule { font: 400 0.8rem/1.6 var(--mono); color: var(--ink); background: var(--panel); border-radius: 3px; padding: 10px 12px; overflow-wrap: anywhere; }
+  .sig { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .sig div { background: var(--panel); border-radius: 3px; padding: 10px 12px; border-top: 3px solid var(--accent); min-width: 0; }
+  .sig b { display: block; font: 600 1.02rem/1.2 var(--display); overflow-wrap: anywhere; }
+  .sig span { display: block; font-size: 0.8rem; line-height: 1.4; color: var(--muted); margin-top: 4px; }
+  .vkey { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .vkey div { display: grid; gap: 2px; padding: 8px 10px; background: var(--panel); border-radius: 3px; border-top: 3px solid var(--line); min-width: 0; align-content: start; }
+  .vkey .g { border-top-color: var(--go); } .vkey .c { border-top-color: var(--check); } .vkey .n { border-top-color: var(--nogo); }
+  .vkey b { font: 700 1.5rem/1 var(--display); font-variant-numeric: tabular-nums; }
+  .vkey span { font: 500 0.72rem/1.3 var(--mono); letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; overflow-wrap: anywhere; }
+  @media (max-width: 900px) { .features { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 520px) {
+    .sig, .feature .vkey { grid-template-columns: minmax(0, 1fr); }
+    .feature .vkey div { grid-template-columns: auto 1fr; align-items: baseline; gap: 4px 12px; }
+  }
+
+  /* tiles */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+  .tile { background: var(--panel); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  @media (min-width: 800px) { .tile.wide { grid-column: span 2; } }
+  .tile h3 { font: 500 1.02rem/1.25 var(--mono); letter-spacing: 0; overflow-wrap: anywhere; }
+  .tile .what { color: var(--ink); }
+  .tile .what strong { font-weight: 600; }
+  .tile .proof { color: var(--muted); font-size: 0.92rem; }
+  .tile .vkey div { background: var(--bg); }
+  .vcap { font-size: 0.84rem; color: var(--muted); }
+  .vbar { display: flex; height: 26px; border-radius: 3px; overflow: hidden; background: var(--bg); }
+  .vbar i { display: block; height: 100%; }
+  .vbar .c { background: var(--check); width: 75%; }
+  .vbar .n { background: var(--nogo); width: 25%; }
+  .facts { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+  .facts div { font-size: 0.9rem; color: var(--muted); }
+  .facts b { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 4px; }
+  .tags li { font: 400 0.72rem/1 var(--mono); padding: 5px 8px; border-radius: 3px; background: var(--bg); color: var(--muted); }
+  .feature .tags li { background: var(--panel); }
+  .links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .links a { font-size: 0.9rem; font-weight: 500; color: var(--accent); text-underline-offset: 3px; }
+  .links a:hover { text-decoration-thickness: 2px; }
+  .more { margin-top: 28px; display: grid; gap: 12px; }
+  .more ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 8px 28px; }
+  .more li { font-size: 0.92rem; color: var(--muted); }
+  .more li a { color: var(--ink); font-family: var(--mono); font-size: 0.86rem; text-underline-offset: 3px; overflow-wrap: anywhere; }
+
+  /* experience */
+  .jobs { display: grid; gap: clamp(24px, 4vw, 40px); }
+  .job { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 8px clamp(20px, 4vw, 48px); }
+  .job .when { font: 400 0.82rem/1.5 var(--mono); color: var(--muted); }
+  .job h3 { font-size: 1.35rem; font-weight: 600; }
+  .job .org { color: var(--accent); font-weight: 600; margin-top: 2px; }
+  .job ul { display: grid; gap: 8px; margin-top: 14px; max-width: 72ch; }
+  .job li { padding-left: 18px; position: relative; color: var(--muted); }
+  .job li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 8px; height: 2px; background: var(--accent); }
+  .job li strong { color: var(--ink); font-weight: 600; }
+  @media (max-width: 720px) { .job { grid-template-columns: minmax(0, 1fr); } }
+
+  /* skills */
+  .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 28px clamp(20px, 3vw, 40px); }
+  .skills h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
+  .skills ul { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skills li { font-size: 0.88rem; padding: 6px 10px; border-radius: 3px; background: var(--panel); }
+  .cred { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 28px clamp(20px, 3vw, 40px); margin-top: clamp(32px, 5vw, 56px); }
+  .cred h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
+  .cred li { padding: 6px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
+  .cred li strong { color: var(--ink); font-weight: 600; }
+
+  /* contact */
+  .contact { display: grid; gap: 24px; }
+  .contact h2 { font-size: clamp(1.9rem, 4.4vw, 3.2rem); font-weight: 700; max-width: 18ch; }
+  .mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+  .mail code { font: 500 clamp(1rem, 2.4vw, 1.3rem)/1.3 var(--mono); overflow-wrap: anywhere; user-select: all; }
+  footer { border-top: 1px solid var(--line); padding-block: 24px; color: var(--muted); font-size: 0.86rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: space-between; }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">Gabriel Năstase</a>
+    <nav class="nav" data-ia="a_sections" aria-label="Sections">
+      <a href="#work" data-i="n_work">Work</a>
+      <a href="#experience" data-i="n_exp">Experience</a>
+      <a href="#skills" data-i="n_skills">Skills</a>
+      <a href="#contact" data-i="n_contact">Contact</a>
+      <span class="tools">
+        <span class="lang" role="group" data-ia="a_lang" aria-label="Language">
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ro" aria-pressed="false">RO</button>
+        </span>
+        <button class="theme" id="theme" type="button" data-ia="a_theme" aria-label="Switch colour theme">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+        </button>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div class="intro">
+      <span class="label" data-i="h_label">Data Engineer · AI &amp; Machine Learning · Bucharest</span>
+      <h1 data-i="h_title">I turn data pipelines into ML and LLM-ready products.</h1>
+      <p data-i="h_p">Four years across <strong>Snowflake, AWS and Databricks</strong>. I run financial data pipelines, then build the forecasting models and Snowflake Cortex agents that sit on top of them. Outside work I publish AI tools on public data: an MCP server, an anomaly detector, a red-team harness for finance agents, a bid agent for Romanian tenders.</p>
+      <div class="cta">
+        <a class="btn primary" href="#work" data-i="h_btn">See the projects</a>
+        <a class="btn" href="https://github.com/gabrieln2805" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/gabriel-n%C4%83stase-3759b222b" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="pipe" aria-labelledby="pipe-title">
+      <div class="pipe-head">
+        <span class="label" id="pipe-title" data-i="p_title">A pipeline I run · cash-out planning</span>
+        <span class="label">DEV · QA · PROD</span>
+      </div>
+      <ol class="flow">
+        <li><span class="step" data-i="s_source">Source</span><b>SAP</b></li>
+        <li><span class="step" data-i="s_unload">Unload</span><b>Snowflake</b></li>
+        <li><span class="step" data-i="s_stage">Stage</span><b>Amazon S3</b></li>
+        <li><span class="step" data-i="s_load">Load</span><b>RDS Aurora</b></li>
+        <li><span class="step" data-i="s_transform">Transform</span><b data-i="v_dbt">dbt, layered</b></li>
+        <li><span class="step" data-i="s_serve">Serve</span><b data-i="v_app">Application tables</b></li>
+      </ol>
+      <div class="orchestra"><span data-i="o_air">Airflow orchestrates every step</span><span data-i="o_infra">storage integrations · external stages · IAM roles</span></div>
+      <p class="pipe-foot" data-i="p_foot">The same stack runs <strong>automated reconciliations across 133 companies</strong> with Snowflake tasks and procedures: 453 records matched, 698 breaks documented.</p>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label" data-i="w_label">Selected projects</span>
+        <h2 data-i="w_title">Work I have published</h2>
+        <p data-i="w_lead">Public code, mostly on real or openly licensed data. Where a project has a measured result, the number is on the card.</p>
+      </div>
+
+      <div class="filters" role="group" data-ia="a_filter" aria-label="Filter projects">
+        <button class="chip" type="button" data-f="all" aria-pressed="true" data-i="f_all">All</button>
+        <button class="chip" type="button" data-f="pipelines" aria-pressed="false" data-i="f_pipe">Pipelines</button>
+        <button class="chip" type="button" data-f="llm" aria-pressed="false" data-i="f_llm">LLM and agents</button>
+        <button class="chip" type="button" data-f="ml" aria-pressed="false" data-i="f_ml">ML and analysis</button>
+      </div>
+
+      <div class="features" id="features">
+        <article class="feature" data-cat="ml llm">
+          <span class="label" data-i="fa_label">Featured · LLM-explained anomaly detection</span>
+          <h3>financial-anomaly-detector</h3>
+          <p data-i="fa_p1">Pulls OHLCV market data and flags anomalies with a Z-score and IQR ensemble over three signals. Claude then writes a two-sentence hypothesis and a High, Medium or Low risk tier for each flagged event.</p>
+          <div class="sig">
+            <div><b data-i="fa_s1">Returns</b><span data-i="fa_s1d">Daily log returns</span></div>
+            <div><b data-i="fa_s2">Volume</b><span data-i="fa_s2d">Volume z-score, 20-day rolling</span></div>
+            <div><b data-i="fa_s3">Volatility</b><span data-i="fa_s3d">20-day realized volatility</span></div>
+          </div>
+          <p class="rule" data-i="fa_rule">flag when |z| &gt; 2.5 AND the IQR fence is broken · rank by the summed |z| of the signals that fired</p>
+          <p data-i="fa_p2">The output is one self-contained HTML dashboard, rebuilt and deployed by GitHub Actions. Without an API key every card falls back to a rule-based explanation. The live demo runs on 8 synthetic companies.</p>
+          <ul class="tags"><li>Python</li><li>Claude API</li><li>GitHub Actions</li><li>GitHub Pages</li></ul>
+          <div class="links">
+            <a href="https://gabrieln2805.github.io/financial-anomaly-detector" target="_blank" rel="noopener" data-i="l_demo">Live demo ↗</a>
+            <a href="https://github.com/gabrieln2805/financial-anomaly-detector" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+        </article>
+
+        <article class="feature" data-cat="llm">
+          <span class="label" data-i="fr_label">Featured · Agent safety testing</span>
+          <h3>finagent-redteam</h3>
+          <p data-i="fr_p1">A stress-test harness for AI agents in regulated finance. It checks three things auditors ask about: prompt-injection resistance, unauthorized actions and hallucinated figures.</p>
+          <div class="vkey">
+            <div class="g"><b>3/3</b><span data-i="fr_k1">Prompt injection</span></div>
+            <div class="g"><b>4/4</b><span data-i="fr_k2">Unauthorized actions</span></div>
+            <div class="g"><b>4/4</b><span data-i="fr_k3">Hallucinated figures</span></div>
+          </div>
+          <p data-i="fr_p2">Live run on 24 Sep 2026 against gpt-oss-20b with two real MCP servers, one serving real EU and Romanian funding data. Verdicts grade the tool calls the model actually made, not what it says it did.</p>
+          <p data-i="fr_p3">The first run scored 9 pass, 1 warn, 1 fail. Both non-passes were grader bugs, not model failures, and re-grading the saved transcripts gave 11 of 11. It is one run of one small model, not a benchmark.</p>
+          <ul class="tags"><li>Python</li><li>MCP</li><li>Groq</li><li>Ollama</li><li>EU open data</li></ul>
+          <div class="links"><a href="https://github.com/gabrieln2805/finagent-redteam" target="_blank" rel="noopener">Repository ↗</a></div>
+        </article>
+      </div>
+
+      <div class="grid" id="grid">
+        <article class="tile wide" data-cat="pipelines llm">
+          <h3>bidscout</h3>
+          <p class="what" data-i="b_what"><strong>Should you bid on this Romanian public tender?</strong> It reads each new notice from the SEAP / SICAP portal, compares the buyer's conditions with a company profile and answers GO, CHECK or NO-GO.</p>
+          <p class="proof" data-i="b_proof">The LLM only extracts facts, and every fact keeps the buyer's own sentence as its source quote. The verdict comes from a rules engine written in YAML. When unsure it says CHECK, never NO-GO. The ingestion client guards against the portal's silent failures, such as ignored filters and capped results, and each trap is a test.</p>
+          <div class="vbar" role="img" data-ia="a_vbar" aria-label="Of 44 contract notices: 0 GO, 33 CHECK, 11 NO-GO"><i class="c"></i><i class="n"></i></div>
+          <div class="vkey">
+            <div class="g"><b>0</b><span>GO</span></div>
+            <div class="c"><b>33</b><span>CHECK</span></div>
+            <div class="n"><b>11</b><span>NO-GO</span></div>
+          </div>
+          <p class="vcap" data-i="b_cap">Run of 2 Oct 2026: 44 contract notices read in full and scored against an example company.</p>
+          <div class="facts">
+            <div data-i="b_f1"><b>129</b> notices collected</div>
+            <div data-i="b_f2"><b>52</b> dbt data tests</div>
+            <div data-i="b_f3"><b>192</b> offline tests</div>
+          </div>
+          <ul class="tags"><li>Python</li><li>dbt</li><li>DuckDB</li><li>SQLite</li><li>GitHub Pages</li></ul>
+          <div class="links">
+            <a href="https://gabrieln2805.github.io/bidscout/" target="_blank" rel="noopener" data-i="l_page">Live page ↗</a>
+            <a href="https://github.com/gabrieln2805/bidscout" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+        </article>
+
+        <article class="tile" data-cat="llm pipelines">
+          <h3>finance-mcp</h3>
+          <p class="what" data-i="m_what">An MCP server built from scratch with FastMCP. An LLM can query balances, transactions and monthly summaries over a general-ledger database.</p>
+          <p class="proof" data-i="m_proof">Ships with 16 planted anomalies and a ground-truth file, so the anomaly tool is scored rather than eyeballed. Documented for the MCP Inspector and Claude Desktop.</p>
+          <ul class="tags"><li>Python</li><li>FastMCP</li><li>SQLite</li><li>pandas</li></ul>
+          <div class="links"><a href="https://github.com/gabrieln2805/finance-mcp" target="_blank" rel="noopener">Repository ↗</a></div>
+        </article>
+
+        <article class="tile" data-cat="ml">
+          <h3>invoice-anomaly-detection</h3>
+          <p class="what" data-i="i_what">Unsupervised anomaly detection for invoice-like transactions. A Keras / TensorFlow autoencoder runs over vendor-normalized features.</p>
+          <p class="proof" data-i="i_proof">Deployed as a Streamlit app with KPI dashboards and CSV export, so an auditor can review the flagged rows.</p>
+          <ul class="tags"><li>Keras</li><li>TensorFlow</li><li>Streamlit</li><li data-i="i_tag">Autoencoder</li></ul>
+        </article>
+
+        <article class="tile" data-cat="ml llm">
+          <h3>auto_bdgt_forecasting</h3>
+          <p class="what" data-i="a_what">A manual SARIMAX pipeline against an agentic workflow where a local LLM (Ollama) picks models and runs rolling-origin backtests on public budget data.</p>
+          <p class="proof" data-i="a_proof">The agentic route chose ETS with an additive trend. RMSE fell from about 3.97e8 to about 7.5e6.</p>
+          <ul class="tags"><li>Python</li><li>statsmodels</li><li>Ollama</li><li>Backtesting</li></ul>
+          <div class="links"><a href="https://github.com/gabrieln2805/auto_bdgt_forecasting" target="_blank" rel="noopener">Repository ↗</a></div>
+        </article>
+
+        <article class="tile" data-cat="llm">
+          <h3>adaptive-effort-router</h3>
+          <p class="what" data-i="r_what">A proxy in front of the Claude Messages API. It sets the effort level from task complexity and sends the hardest user-blocking tasks to a stronger model.</p>
+          <p class="proof" data-i="r_proof">Strips legacy sampling parameters that now return HTTP 400, falls back when a response ends in a refusal, and tracks cost per request.</p>
+          <ul class="tags"><li>Node.js</li><li>Claude API</li><li>GitHub Actions</li><li>MIT</li></ul>
+          <div class="links"><a href="https://github.com/gabrieln2805/adaptive-effort-router" target="_blank" rel="noopener">Repository ↗</a></div>
+        </article>
+
+        <article class="tile" data-cat="ml">
+          <h3>propaganda-signature-detection</h3>
+          <p class="what" data-i="pr_what">A TF-IDF logistic regression trained on 36 Cold War documents, then run over 17 contemporary US speeches, with a seven-device rhetoric lexicon alongside.</p>
+          <p class="proof" data-i="pr_proof">Every modern speech scored 0.69 to 0.75, close to the Soviet mean of 0.76, yet enemy-naming and us-versus-them framing are what modern speech uses least. The write-up lists its own limits.</p>
+          <ul class="tags"><li>Python</li><li>scikit-learn</li><li>NLP</li><li>Embeddings</li></ul>
+          <div class="links"><a href="https://github.com/gabrieln2805/propaganda-signature-detection" target="_blank" rel="noopener">Repository ↗</a></div>
+        </article>
+
+        <article class="tile" data-cat="ml">
+          <h3>Stylometry_Poems</h3>
+          <p class="what" data-i="st_what">Stylometric features for poems, clustered into six groups with K-means and projected with PCA.</p>
+          <p class="proof" data-i="st_proof">Built on 13,854 Poetry Foundation poems and the 77,962-record Project Gutenberg catalog. Features include lexical diversity, readability and a crude end-rhyme score.</p>
+          <ul class="tags"><li>Python</li><li>K-means</li><li>PCA</li><li>Jupyter</li></ul>
+          <div class="links"><a href="https://github.com/gabrieln2805/Stylometry_Poems" target="_blank" rel="noopener">Repository ↗</a></div>
+        </article>
+      </div>
+
+      <div class="more" data-cat="ml">
+        <span class="label" data-i="e_label">Earlier analysis work</span>
+        <ul>
+          <li><a href="https://github.com/gabrieln2805/Sales-RFM-Analysis" target="_blank" rel="noopener">Sales-RFM-Analysis</a> · <span data-i="e1">customer segmentation in T-SQL</span></li>
+          <li><a href="https://github.com/gabrieln2805/Retail-Sales-Case-Study" target="_blank" rel="noopener">Retail-Sales-Case-Study</a> · <span data-i="e2">retail sales analysis in T-SQL</span></li>
+          <li><a href="https://github.com/gabrieln2805/SQL-Data-Cleaning---Housing-Market" target="_blank" rel="noopener">SQL-Data-Cleaning---Housing-Market</a> · <span data-i="e3">cleaning and preprocessing</span></li>
+          <li><a href="https://github.com/gabrieln2805/EDA-Romania-Unemployment-Rate" target="_blank" rel="noopener">EDA-Romania-Unemployment-Rate</a> · <span data-i="e4">exploratory data analysis</span></li>
+          <li><a href="https://github.com/gabrieln2805/Sistem-recomandare-carti" target="_blank" rel="noopener">Sistem-recomandare-carti</a> · <span data-i="e5">book recommender in Python</span></li>
+          <li><a href="https://github.com/gabrieln2805/Romania-Survey-AI" target="_blank" rel="noopener">Romania-Survey-AI</a> · <span data-i="e6">survey analysis on awareness of AI</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 data-i="x_title">Experience</h2>
+      </div>
+
+      <div class="jobs">
+        <article class="job">
+          <div class="when" data-i="j1_when">Jan 2024 – Present<br>Bucharest</div>
+          <div>
+            <h3>Applied AI Data Scientist</h3>
+            <div class="org">Siemens Energy</div>
+            <ul>
+              <li data-i="j1_a"><strong>Pipelines.</strong> Built and maintain the financial data pipelines for a cash-out planning application: Snowflake unload of SAP data to S3, load into RDS Aurora, layered dbt transformation, Airflow orchestration.</li>
+              <li data-i="j1_b"><strong>Infrastructure.</strong> Manage the AWS and Snowflake setup across development, quality and production: storage integrations, external stages, S3 buckets, IAM roles.</li>
+              <li data-i="j1_c"><strong>Forecasting.</strong> Delivered a production ML forecasting pipeline at Profit Center and GL account level (XGBoost, Random Forest, LSTM, TabNet in PyTorch), published through a Snowflake view and a Power BI MVP.</li>
+              <li data-i="j1_d"><strong>Agents.</strong> Built Snowflake Cortex agents for internal financial controlling processes, plus a Snowflake AI cost tracker and forecaster covering credit consumption, cost segmentation and projection.</li>
+              <li data-i="j1_e"><strong>Reconciliation.</strong> Automated reconciliations across 133 companies with Snowflake tasks and procedures: 453 records matched, 698 breaks documented.</li>
+              <li data-i="j1_f"><strong>Modelling and BI.</strong> Kimball dimensional models for cross-system migrations. Power BI semantic models, security layers and dashboards.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="job">
+          <div class="when" data-i="j2_when">Aug 2022 – Jan 2024<br>Bucharest</div>
+          <div>
+            <h3 data-i="j2_t">Data Analyst</h3>
+            <div class="org">Kaufland Romania &amp; Moldova</div>
+            <ul>
+              <li data-i="j2_a">Marketing and CRM analyses in SQL, including basket-targeted campaigns and RFM segmentation.</li>
+              <li data-i="j2_b">Churn clustering and prediction models in Databricks, plus regression and descriptive statistics.</li>
+              <li data-i="j2_c">Advanced SQL (CTEs, window functions, stored procedures) for the marketing and CRM data layer, and KPI reporting.</li>
+              <li data-i="j2_d">Data cleaning in Python (pandas, NumPy) and automated lottery-campaign logic through Python queries.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="job">
+          <div class="when" data-i="j3_when">Feb 2020 – Jun 2022<br>Bucharest</div>
+          <div>
+            <h3 data-i="j3_t">Quality Analyst</h3>
+            <div class="org">Just Eat Takeaway.com</div>
+            <ul>
+              <li data-i="j3_a">Analyzed partner quality factors and performance indices in Tableau to improve processes and customer satisfaction.</li>
+              <li data-i="j3_b">Led process-improvement projects, including a virtual-agent implementation, tips and tricks guides, and complaint-response templates.</li>
+              <li data-i="j3_c">Handled escalated complaints from customers, partners and authorized institutions, and coordinated shifts as team lead when needed.</li>
+              <li data-i="j3_d">Started as Customer Service Representative (Feb 2020), then Senior Customer Service Representative (Aug 2020), before moving to quality in Nov 2020.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="job">
+          <div class="when" data-i="j4_when">Dec 2018 – Aug 2019<br>Bucharest</div>
+          <div>
+            <h3 data-i="j4_t">Warehouse Manager</h3>
+            <div class="org">Inditex</div>
+            <ul>
+              <li data-i="j4_a">Managed restocking, order processing and packing, inventory counts and timely order shipment.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label" data-i="k_label">Skills</span>
+        <h2 data-i="k_title">What I work with</h2>
+      </div>
+
+      <div class="skills">
+        <div>
+          <h3>Data engineering</h3>
+          <ul>
+            <li>Snowflake</li><li>dbt</li><li>Airflow</li><li>AWS: S3, RDS Aurora, IAM</li><li>Databricks</li><li>ETL / ELT</li><li data-i="k_kimball">Kimball modelling</li><li>SQL</li><li>Python: pandas, NumPy</li><li data-i="k_recon">Data reconciliation</li><li data-i="k_env">DEV / QA / PROD promotion</li>
+          </ul>
+        </div>
+        <div>
+          <h3 data-i="k_h2">AI and machine learning</h3>
+          <ul>
+            <li>Claude API</li><li>Ollama</li><li>LangChain</li><li data-i="k_cortex">Snowflake Cortex agents</li><li data-i="k_mcp">MCP servers</li><li>PyTorch</li><li>scikit-learn</li><li>XGBoost</li><li>Random Forest</li><li>TabNet</li><li>LSTM</li><li>SARIMAX, ETS</li><li data-i="k_auto">Autoencoders</li>
+          </ul>
+        </div>
+        <div>
+          <h3 data-i="k_h3">MLOps and delivery</h3>
+          <ul>
+            <li data-i="k_deploy">Model deployment and monitoring</li><li>GitHub Actions CI/CD</li><li>Streamlit</li><li>GitHub Pages</li><li>Power Automate</li><li data-i="k_test">Automated testing</li><li>Git</li><li data-i="k_api">API integration</li>
+          </ul>
+        </div>
+        <div>
+          <h3 data-i="k_h4">BI and reporting</h3>
+          <ul>
+            <li data-i="k_pbi">Power BI: semantic models, security</li><li>Tableau</li><li data-i="k_kpi">KPI reporting</li><li data-i="k_sem">Semantic layers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cred">
+        <div>
+          <h3 data-i="c_h">Certifications</h3>
+          <ul>
+            <li>Machine Learning Operations</li>
+            <li>Building Scalable Agentic Systems</li>
+            <li>Developing LLM Applications with LangChain</li>
+            <li>Introduction to LLMs in Python</li>
+            <li>Google Data Analytics Specialization</li>
+            <li>Python Data Science Toolbox</li>
+            <li>2022 Complete SQL Bootcamp</li>
+            <li>International Financial Reporting Standards (IFRS)</li>
+          </ul>
+        </div>
+        <div>
+          <h3 data-i="ed_h">Education</h3>
+          <ul>
+            <li data-i="ed_li"><strong>International Business Administration</strong> (Economie internațională)<br>Universitatea Creștină "Dimitrie Cantemir" · Sep 2018 – Jul 2021</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact">
+      <span class="label" data-i="ct_label">Contact</span>
+      <h2 data-i="ct_title">Have a pipeline that should feed a model?</h2>
+      <div class="mail">
+        <code id="addr">gabrielnastase2805@gmail.com</code>
+        <button class="btn" type="button" id="copy" data-i="c_copy">Copy address</button>
+        <a class="btn primary" href="mailto:gabrielnastase2805@gmail.com" data-i="c_mail">Write an email</a>
+      </div>
+      <div class="cta">
+        <a class="btn" href="https://github.com/gabrieln2805" target="_blank" rel="noopener">github.com/gabrieln2805</a>
+        <a class="btn" href="https://www.linkedin.com/in/gabriel-n%C4%83stase-3759b222b" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Gabriel Năstase</span><span data-i="ft_loc">Bucharest, Romania</span></div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+
+    /* ---------- Romanian copy. English is read from the page itself. ---------- */
+    var RO = {
+      a_sections: 'Secțiuni', a_lang: 'Limbă', a_theme: 'Schimbă tema de culoare', a_filter: 'Filtrează proiectele',
+      a_vbar: 'Din 44 de anunțuri de contract: 0 GO, 33 CHECK, 11 NO-GO',
+      n_work: 'Proiecte', n_exp: 'Experiență', n_skills: 'Competențe', n_contact: 'Contact',
+      h_label: 'Data Engineer · AI și Machine Learning · București',
+      h_title: 'Transform pipeline-uri de date în produse pregătite pentru ML și LLM.',
+      h_p: 'Patru ani de lucru cu <strong>Snowflake, AWS și Databricks</strong>. Administrez pipeline-uri de date financiare, apoi construiesc modelele de forecasting și agenții Snowflake Cortex care rulează peste ele. În afara serviciului public unelte AI pe date publice: un server MCP, un detector de anomalii, un harness de red-teaming pentru agenți financiari și un agent de ofertare pentru licitațiile publice din România.',
+      h_btn: 'Vezi proiectele',
+      p_title: 'Un pipeline pe care îl administrez · planificarea cash-out',
+      s_source: 'Sursă', s_unload: 'Export', s_stage: 'Stocare', s_load: 'Încărcare', s_transform: 'Transformare', s_serve: 'Servire',
+      v_dbt: 'dbt, pe straturi', v_app: 'Tabele aplicație',
+      o_air: 'Airflow orchestrează fiecare pas', o_infra: 'storage integrations · external stages · roluri IAM',
+      p_foot: 'Aceeași infrastructură rulează <strong>reconcilieri automate pentru 133 de companii</strong> cu Snowflake tasks și proceduri: 453 de înregistrări potrivite, 698 de diferențe documentate.',
+      w_label: 'Proiecte selectate', w_title: 'Proiecte publicate',
+      w_lead: 'Cod public, în mare parte pe date reale sau cu licență deschisă. Acolo unde un proiect are un rezultat măsurat, cifra este pe card.',
+      f_all: 'Toate', f_pipe: 'Pipeline-uri', f_llm: 'LLM și agenți', f_ml: 'ML și analiză',
+      fa_label: 'În prim-plan · detecție de anomalii explicată de LLM',
+      fa_p1: 'Preia date de piață OHLCV și semnalează anomalii cu un ansamblu Z-score și IQR peste trei semnale. Claude scrie apoi o ipoteză în două propoziții și un nivel de risc Ridicat, Mediu sau Scăzut pentru fiecare eveniment semnalat.',
+      fa_s1: 'Randamente', fa_s1d: 'Randamente logaritmice zilnice',
+      fa_s2: 'Volum', fa_s2d: 'Z-score al volumului, fereastră de 20 de zile',
+      fa_s3: 'Volatilitate', fa_s3d: 'Volatilitate realizată pe 20 de zile',
+      fa_rule: 'semnalează când |z| &gt; 2,5 ȘI limita IQR este depășită · ordonează după suma |z| a semnalelor activate',
+      fa_p2: 'Rezultatul este un singur dashboard HTML autonom, reconstruit și publicat de GitHub Actions. Fără cheie API, fiecare card revine la o explicație bazată pe reguli. Demo-ul live rulează pe 8 companii sintetice.',
+      l_demo: 'Demo live ↗', l_page: 'Pagina live ↗',
+      fr_label: 'În prim-plan · testarea siguranței agenților',
+      fr_p1: 'Un harness de testare la stres pentru agenți AI din finanțe reglementate. Verifică trei lucruri pe care le cer auditorii: rezistența la prompt injection, acțiunile neautorizate și cifrele halucinate.',
+      fr_k1: 'Prompt injection', fr_k2: 'Acțiuni neautorizate', fr_k3: 'Cifre halucinate',
+      fr_p2: 'Rulare live pe 24 sept. 2026 cu gpt-oss-20b și două servere MCP reale, unul cu date reale despre fondurile UE și din România. Verdictele evaluează apelurile de tool pe care modelul le-a făcut efectiv, nu ce spune că a făcut.',
+      fr_p3: 'Prima rulare a dat 9 reușite, 1 avertisment și 1 eșec. Ambele rezultate nereușite au fost erori ale evaluatorului, nu ale modelului, iar reevaluarea transcrierilor salvate a dat 11 din 11. Este o singură rulare a unui model mic, nu un benchmark.',
+      b_what: '<strong>Merită să licitezi la această achiziție publică din România?</strong> Citește fiecare anunț nou din portalul SEAP / SICAP, compară condițiile autorității contractante cu profilul unei companii și răspunde GO, CHECK sau NO-GO.',
+      b_proof: 'LLM-ul doar extrage fapte, iar fiecare fapt păstrează propoziția autorității contractante drept citat-sursă. Verdictul vine dintr-un motor de reguli scris în YAML. Când nu e sigur, spune CHECK, niciodată NO-GO. Clientul de ingestie se apără de defectele silențioase ale portalului, precum filtrele ignorate și rezultatele plafonate, iar fiecare capcană este un test.',
+      b_cap: 'Rularea din 2 oct. 2026: 44 de anunțuri de contract citite integral și evaluate pentru o companie exemplu.',
+      b_f1: '<b>129</b> anunțuri colectate', b_f2: '<b>52</b> teste de date dbt', b_f3: '<b>192</b> teste offline',
+      m_what: 'Un server MCP construit de la zero cu FastMCP. Un LLM poate interoga solduri, tranzacții și sumare lunare dintr-o bază de date de tip registru general.',
+      m_proof: 'Include 16 anomalii plantate și un fișier de adevăr de referință, așa că unealta de anomalii este măsurată, nu apreciată din ochi. Documentat pentru MCP Inspector și Claude Desktop.',
+      i_what: 'Detecție nesupervizată de anomalii pentru tranzacții de tip factură. Un autoencoder Keras / TensorFlow rulează peste caracteristici normalizate pe furnizor.',
+      i_proof: 'Publicat ca aplicație Streamlit, cu dashboard-uri KPI și export CSV, astfel încât un auditor să poată verifica rândurile semnalate.',
+      i_tag: 'Autoencoder',
+      a_what: 'Un pipeline SARIMAX manual comparat cu un flux agentic în care un LLM local (Ollama) alege modelele și rulează backtest-uri rolling-origin pe date bugetare publice.',
+      a_proof: 'Varianta agentică a ales ETS cu trend aditiv. RMSE a scăzut de la aproximativ 3,97e8 la aproximativ 7,5e6.',
+      r_what: 'Un proxy în fața API-ului Claude Messages. Setează nivelul de effort după complexitatea sarcinii și trimite sarcinile cele mai grele, cele care blochează utilizatorul, către un model mai puternic.',
+      r_proof: 'Elimină parametrii de sampling vechi, care acum returnează HTTP 400, trece pe un model de rezervă când un răspuns se termină cu refuz și urmărește costul pe cerere.',
+      pr_what: 'O regresie logistică TF-IDF antrenată pe 36 de documente din Războiul Rece, apoi aplicată pe 17 discursuri americane contemporane, alături de un lexicon retoric cu șapte procedee.',
+      pr_proof: 'Toate discursurile moderne au obținut între 0,69 și 0,75, aproape de media sovietică de 0,76, dar desemnarea inamicului și încadrarea „noi contra lor” sunt ce folosesc cel mai puțin. Textul își enumeră singur limitele.',
+      st_what: 'Trăsături stilometrice pentru poezii, grupate în șase clustere cu K-means și proiectate cu PCA.',
+      st_proof: 'Construit pe 13.854 de poezii Poetry Foundation și catalogul Project Gutenberg cu 77.962 de înregistrări. Trăsăturile includ diversitatea lexicală, lizibilitatea și un scor brut al rimei finale.',
+      e_label: 'Lucrări de analiză mai vechi',
+      e1: 'segmentarea clienților în T-SQL', e2: 'analiza vânzărilor retail în T-SQL', e3: 'curățare și preprocesare a datelor',
+      e4: 'analiză exploratorie a datelor', e5: 'sistem de recomandare de cărți în Python', e6: 'analiza unui sondaj despre cunoașterea AI',
+      x_title: 'Experiență',
+      j1_when: 'ian. 2024 – prezent<br>București',
+      j1_a: '<strong>Pipeline-uri.</strong> Am construit și mențin pipeline-urile de date financiare pentru o aplicație de planificare cash-out: export din SAP prin Snowflake în S3, încărcare în RDS Aurora, transformare dbt pe straturi, orchestrare cu Airflow.',
+      j1_b: '<strong>Infrastructură.</strong> Administrez configurarea AWS și Snowflake în mediile de dezvoltare, calitate și producție: storage integrations, external stages, bucket-uri S3, roluri IAM.',
+      j1_c: '<strong>Forecasting.</strong> Am livrat un pipeline ML de forecasting în producție, la nivel de Profit Center și cont GL (XGBoost, Random Forest, LSTM, TabNet în PyTorch), publicat printr-un view Snowflake și un MVP Power BI.',
+      j1_d: '<strong>Agenți.</strong> Am construit agenți Snowflake Cortex pentru procese interne de controlling financiar, plus un tracker și forecaster al costurilor Snowflake AI: consum de credite, segmentarea costurilor și proiecții.',
+      j1_e: '<strong>Reconciliere.</strong> Am automatizat reconcilierile pentru 133 de companii cu Snowflake tasks și proceduri: 453 de înregistrări potrivite, 698 de diferențe documentate.',
+      j1_f: '<strong>Modelare și BI.</strong> Modele dimensionale Kimball pentru migrări între sisteme. Modele semantice Power BI, straturi de securitate și dashboard-uri.',
+      j2_when: 'aug. 2022 – ian. 2024<br>București', j2_t: 'Analist de date',
+      j2_a: 'Analize de marketing și CRM în SQL, inclusiv campanii țintite pe coșul de cumpărături și segmentare RFM.',
+      j2_b: 'Modele de clustering și predicție a churn-ului în Databricks, plus regresie și statistici descriptive.',
+      j2_c: 'SQL avansat (CTE-uri, funcții fereastră, proceduri stocate) pentru stratul de date de marketing și CRM și raportare KPI.',
+      j2_d: 'Curățarea datelor în Python (pandas, NumPy) și automatizarea logicii campaniilor tip loterie prin interogări Python.',
+      j3_when: 'feb. 2020 – iun. 2022<br>București', j3_t: 'Analist calitate',
+      j3_a: 'Am analizat factorii de calitate ai partenerilor și indicii de performanță în Tableau pentru a îmbunătăți procesele și satisfacția clienților.',
+      j3_b: 'Am condus proiecte de îmbunătățire a proceselor, printre care implementarea unui agent virtual, ghiduri cu sfaturi și trucuri și șabloane de răspuns la reclamații.',
+      j3_c: 'Am gestionat reclamațiile escaladate ale clienților, partenerilor și instituțiilor autorizate și am coordonat tura ca team lead când a fost nevoie.',
+      j3_d: 'Am început ca Customer Service Representative (feb. 2020), apoi Senior Customer Service Representative (aug. 2020), înainte de a trece în zona de calitate în nov. 2020.',
+      j4_when: 'dec. 2018 – aug. 2019<br>București', j4_t: 'Gestionar depozit',
+      j4_a: 'Am gestionat reaprovizionarea, procesarea și împachetarea comenzilor, inventarierea și expedierea la timp a comenzilor.',
+      k_label: 'Competențe', k_title: 'Cu ce lucrez',
+      k_kimball: 'Modelare Kimball', k_recon: 'Reconciliere de date', k_env: 'Promovare DEV / QA / PROD',
+      k_h2: 'AI și machine learning', k_cortex: 'Agenți Snowflake Cortex', k_mcp: 'Servere MCP', k_auto: 'Autoencodere',
+      k_h3: 'MLOps și livrare', k_deploy: 'Deployment și monitorizare de modele', k_test: 'Teste automatizate', k_api: 'Integrări API',
+      k_h4: 'BI și raportare', k_pbi: 'Power BI: modele semantice, securitate', k_kpi: 'Raportare KPI', k_sem: 'Straturi semantice',
+      c_h: 'Certificări', ed_h: 'Educație',
+      ed_li: '<strong>International Business Administration</strong> (Economie internațională)<br>Universitatea Creștină „Dimitrie Cantemir” · sep. 2018 – iul. 2021',
+      ct_label: 'Contact', ct_title: 'Ai un pipeline care ar trebui să alimenteze un model?',
+      c_copy: 'Copiază adresa', c_mail: 'Scrie un email', c_copied: 'Copiat', c_ctrlc: 'Apasă Ctrl+C',
+      ft_loc: 'București, România'
+    };
+    var EXTRA_EN = { c_copied: 'Copied', c_ctrlc: 'Press Ctrl+C' };
+    var EN = {}, ENA = {};
+    var textEls = document.querySelectorAll('[data-i]');
+    var attrEls = document.querySelectorAll('[data-ia]');
+    textEls.forEach(function (el) { EN[el.getAttribute('data-i')] = el.innerHTML; });
+    attrEls.forEach(function (el) { ENA[el.getAttribute('data-ia')] = el.getAttribute('aria-label'); });
+
+    var lang = 'en';
+    function t(key) { return lang === 'ro' ? RO[key] : (EN[key] !== undefined ? EN[key] : EXTRA_EN[key]); }
+
+    function setLang(next, save) {
+      lang = next;
+      root.setAttribute('lang', next);
+      textEls.forEach(function (el) { var v = t(el.getAttribute('data-i')); if (v !== undefined) el.innerHTML = v; });
+      attrEls.forEach(function (el) {
+        var k = el.getAttribute('data-ia');
+        el.setAttribute('aria-label', next === 'ro' ? RO[k] : ENA[k]);
+      });
+      document.querySelectorAll('.lang button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === next));
+      });
+      if (save) { try { localStorage.setItem('lang', next); } catch (e) {} }
+    }
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.addEventListener('click', function () { setLang(b.getAttribute('data-lang'), true); });
+    });
+    var start = null;
+    try { start = localStorage.getItem('lang'); } catch (e) {}
+    if (start !== 'ro' && start !== 'en') start = /^ro\b/i.test(navigator.language || '') ? 'ro' : 'en';
+    if (start === 'ro') setLang('ro', false);
+
+    /* ---------- Theme ---------- */
+    document.getElementById('theme').addEventListener('click', function () {
+      var explicit = root.getAttribute('data-theme');
+      var dark = explicit ? explicit === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', dark ? 'light' : 'dark');
+    });
+
+    /* ---------- Project filter ---------- */
+    var chips = document.querySelectorAll('.chip');
+    var items = document.querySelectorAll('[data-cat]');
+    var features = document.getElementById('features');
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var f = chip.getAttribute('data-f');
+        chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+        items.forEach(function (el) {
+          el.hidden = !(f === 'all' || el.getAttribute('data-cat').split(' ').indexOf(f) !== -1);
+        });
+        features.hidden = !features.querySelector('.feature:not([hidden])');
+      });
+    });
+
+    /* ---------- Copy address ---------- */
+    var btn = document.getElementById('copy');
+    var addr = document.getElementById('addr');
+    btn.addEventListener('click', function () {
+      function done() { btn.textContent = t('c_copied'); setTimeout(function () { btn.textContent = t('c_copy'); }, 1800); }
+      function select() {
+        var r = document.createRange(); r.selectNodeContents(addr);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = t('c_ctrlc');
+      }
+      try {
+        navigator.clipboard.writeText(addr.textContent).then(done, select);
+      } catch (e) { select(); }
+    });
+  })();
+</script>
